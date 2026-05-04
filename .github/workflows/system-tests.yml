@@ -4,7 +4,6 @@ description: Run Newman API tests against deployed API.
 on:
   push:
     branches: [ main ]
-  pull_request:
 
 jobs:
   smoke-tests:

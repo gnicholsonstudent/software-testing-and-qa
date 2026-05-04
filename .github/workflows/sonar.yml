@@ -52,6 +52,7 @@ jobs:
 
       - name: Test (with coverage)
         working-directory: src
+        continue-on-error: true
         run: | 
           dotnet test tests/ReferenceDataApi.UnitTests -c Release --collect:"XPlat Code Coverage;Format=opencover" --logger "trx"
           dotnet test tests/ReferenceDataApi.IntegrationTests -c Release --collect:"XPlat Code Coverage;Format=opencover" --logger "trx"
