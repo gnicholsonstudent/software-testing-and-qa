@@ -58,6 +58,8 @@ jobs:
           dotnet test tests/ReferenceDataApi.IntegrationTests -c Release --collect:"XPlat Code Coverage;Format=opencover" --logger "trx"
 
       - name: End Sonar analysis
+        if: always()
+        continue-on-error: true
         working-directory: src
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
