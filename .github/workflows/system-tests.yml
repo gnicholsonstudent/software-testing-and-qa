@@ -19,6 +19,6 @@ jobs:
         run: npm install -g newman
 
       - name: Run Postman collection
-        working-directory: src/tests/postman
+        working-directory: src/tests/ReferenceDataApi.SystemTests
         run: |
           newman run functional-tests.json --environment environment.json
