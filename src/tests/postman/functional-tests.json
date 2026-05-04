@@ -13,6 +13,10 @@
           "listen": "test",
           "script": {
             "exec": [
+              "const jsonData = pm.response.json();\r",
+              "\r",
+              "pm.environment.set(\"entityId\", jsonData.id);\r",
+              "\r",
               "pm.test(\"Status code is 201 Created\", function () {\r",
               "    pm.response.to.have.status(201);\r",
               "});\r",
@@ -78,6 +82,326 @@
           ],
           "path": [
             "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FT_02 Get endpoint successfully retrieves an entity",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains correct id\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.id).to.eql(parseInt(pm.environment.get(\"entityId\")));\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains label\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.label).to.not.be.null;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FT_03 Update endpoint successfully updates an entity",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204 No Content\", function () {\r",
+              "    pm.response.to.have.status(204);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Updated label\",\r\n  \"active\": false,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FT_03 Verify update applied",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Update verified - label changed\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.label).to.eql(\"Updated label\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Update verified - active changed\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.active).to.eql(false);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FT_04 Delete successfully deletes an entity",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204 No Content\", function () {\r",
+              "    pm.response.to.have.status(204);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FT_04 Verify delete removed entity",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Entity no longer exists\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
           ]
         }
       },
