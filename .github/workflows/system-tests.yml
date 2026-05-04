@@ -22,6 +22,10 @@ jobs:
         working-directory: src/tests/ReferenceDataApi.PerformanceTests
         run: k6 run performance-tests.js
 
+      - name: Run Load Tests
+        working-directory: src/tests/ReferenceDataApi.PerformanceTests
+        run: k6 run load-tests.js
+
   smoke-tests:
     name: Smoke Tests (ST)
     needs: performance-tests
@@ -34,7 +38,7 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
-      - name: Run Postman collection
+      - name: Run Newman collection
         working-directory: src/tests/ReferenceDataApi.SystemTests
         run: newman run smoke-tests.json --environment environment.json
 
@@ -50,7 +54,7 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
-      - name: Run Postman collection
+      - name: Run Newman collection
         working-directory: src/tests/ReferenceDataApi.SystemTests
         run: newman run functional-tests.json --environment environment.json
 
@@ -66,7 +70,7 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
-      - name: Run Postman collection
+      - name: Run Newman collection
         working-directory: src/tests/ReferenceDataApi.SystemTests
         run: newman run authentication-tests.json --environment environment.json
 
@@ -82,6 +86,6 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
-      - name: Run Postman collection
+      - name: Run Newman collection
         working-directory: src/tests/ReferenceDataApi.SystemTests
         run: newman run validation-tests.json --environment environment.json
