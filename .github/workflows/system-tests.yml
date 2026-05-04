@@ -7,8 +7,25 @@ on:
   pull_request:
 
 jobs:
+  smoke-tests:
+    name: Smoke Tests (ST)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman collection
+        working-directory: src/tests/ReferenceDataApi.SystemTests
+        run: |
+          newman run smoke-tests.json --environment environment.json
+
   functional-tests:
     name: Functional Tests (FT)
+    needs: smoke-tests
     runs-on: ubuntu-latest
 
     steps:
