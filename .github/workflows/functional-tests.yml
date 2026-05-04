@@ -1,4 +1,5 @@
-name: Functional Tests (FT)
+name: System Tests
+description: Run Postman collection API tests against deployed API.
 
 on:
   push:
