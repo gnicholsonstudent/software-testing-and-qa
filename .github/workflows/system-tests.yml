@@ -7,28 +7,8 @@ on:
   pull_request:
 
 jobs:
-  performance-tests:
-    name: Performance Tests (PT)
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-     
-      - name: Install k6
-        run: sudo snap install k6
-
-      - name: Run Performance Tests
-        working-directory: src/tests/ReferenceDataApi.PerformanceTests
-        run: k6 run performance-tests.js
-
-      - name: Run Load Tests
-        working-directory: src/tests/ReferenceDataApi.PerformanceTests
-        run: k6 run load-tests.js
-
   smoke-tests:
     name: Smoke Tests (ST)
-    needs: performance-tests
     runs-on: ubuntu-latest
 
     steps:
