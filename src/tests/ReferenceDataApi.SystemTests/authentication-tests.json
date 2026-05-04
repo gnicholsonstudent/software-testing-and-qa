@@ -1,0 +1,1127 @@
+{
+  "info": {
+    "_postman_id": "b7c33956-99e0-4425-a74c-16c15635eb22",
+    "name": "ReferenceDataAPI.AuthenticationTests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "35037695"
+  },
+  "item": [
+    {
+      "name": "AT_01 Create endpoint authorises requests with valid Admin API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonData = pm.response.json();\r",
+              "\r",
+              "pm.environment.set(\"entityId\", jsonData.id);\r",
+              "\r",
+              "pm.test(\"Status code is 201 Created\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains id\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.id).to.not.be.null;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Label is correct\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.label).to.eql(\"Test label\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_02 Create endpoint rejects requests with valid Reader API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is Unauthorised\", function () {\r",
+              "    pm.response.to.have.status(403);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-reader-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_03 Create endpoint rejects requests without a valid API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is unauthenticated\", function () {\r",
+              "    pm.response.to.have.status(401);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_04 Create endpoint rejects requests with a malformed API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is unauthenticated\", function () {\r",
+              "    pm.response.to.have.status(401);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{malformed-api-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_05 Read endpoint authorises requests with valid Admin API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains correct id\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.id).to.eql(parseInt(pm.environment.get(\"entityId\")));\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains label\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.label).to.not.be.null;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_06 Read endpoint authorises requests with valid Reader API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains correct id\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.id).to.eql(parseInt(pm.environment.get(\"entityId\")));\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains label\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.label).to.not.be.null;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-reader-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_07 Read endpoint rejects requests without a valid API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is unauthenticated\", function () {\r",
+              "    pm.response.to.have.status(401);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_08 Read endpoint rejects requests with a malformed API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is unauthenticated\", function () {\r",
+              "    pm.response.to.have.status(401);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{malformed-api-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_09 Update endpoint authorises requests with valid Admin API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204 No Content\", function () {\r",
+              "    pm.response.to.have.status(204);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.sendRequest({\r",
+              "    url: pm.collectionVariables.get(\"masters-ref-data-api\") + \"/location\",\r",
+              "    method: 'POST',\r",
+              "    header: {\r",
+              "        'Content-Type': 'application/json',\r",
+              "        'X-Api-Key': pm.collectionVariables.get(\"reference-api-admin-key\")\r",
+              "    },\r",
+              "    body: {\r",
+              "        mode: 'raw',\r",
+              "        raw: JSON.stringify({\r",
+              "            label: \"Temp Entity\",\r",
+              "            active: true,\r",
+              "            derivesFrom: null\r",
+              "        })\r",
+              "    }\r",
+              "}, function (err, res) {\r",
+              "    console.log(pm.environment.get(\"masters-ref-data-api\") + \"/location\")\r",
+              "    const json = res.json();\r",
+              "    pm.environment.set(\"entityId\", json.id);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Updated label\",\r\n  \"active\": false,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_10 Update endpoint rejects requests with valid Reader API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is Unauthorised\", function () {\r",
+              "    pm.response.to.have.status(403);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-reader-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Updated label\",\r\n  \"active\": false,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_11 Update endpoint rejects requests without an API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is Unauthenticated\", function () {\r",
+              "    pm.response.to.have.status(401);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Updated label\",\r\n  \"active\": false,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_12 Update endpoint rejects requests with a malformed API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is Unauthenticated\", function () {\r",
+              "    pm.response.to.have.status(401);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{malformed-api-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Updated label\",\r\n  \"active\": false,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_13 Delete endpoint authorises requests with valid Admin API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204 No Content\", function () {\r",
+              "    pm.response.to.have.status(204);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_14 Delete endpoint rejects requests with valid Reader API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is Unauthorised\", function () {\r",
+              "    pm.response.to.have.status(403);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_15 Delete endpoint rejects requests without an API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is Unauthenticated\", function () {\r",
+              "    pm.response.to.have.status(401);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_16 Delete endpoint rejects requests with a malformed API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"User is Unauthenticated\", function () {\r",
+              "    pm.response.to.have.status(401);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{malformed-api-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/{{entityId}}",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "{{entityId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AT_17 Health endpoint does not require authentication",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{masters-ref-data-api}}/health",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "reference-api-admin-key",
+      "value": ""
+    },
+    {
+      "key": "masters-ref-data-api",
+      "value": ""
+    },
+    {
+      "key": "reference-api-reader-key",
+      "value": ""
+    },
+    {
+      "key": "malformed-api-key",
+      "value": ""
+    }
+  ]
+}

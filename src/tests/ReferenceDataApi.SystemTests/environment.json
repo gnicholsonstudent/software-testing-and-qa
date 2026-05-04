@@ -10,6 +10,16 @@
       "key": "reference-api-admin-key",
       "value": "admin-secret-123",
       "enabled": true
+    },
+    {
+      "key": "reference-api-admin-key",
+      "value": "reader-secret-456",
+      "enabled": true
+    },
+    {
+      "key": "malformed-api-key",
+      "value": "tehrehedhsu",
+      "enabled": true
     }
   ]
 }

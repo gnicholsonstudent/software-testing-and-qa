@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  functional-tests:
     name: Functional Tests (FT)
     runs-on: ubuntu-latest
 
@@ -22,3 +22,20 @@ jobs:
         working-directory: src/tests/ReferenceDataApi.SystemTests
         run: |
           newman run functional-tests.json --environment environment.json
+
+  authentication-tests:
+    name: Authentication Tests (AT)
+    needs: functional-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman collection
+        working-directory: src/tests/ReferenceDataApi.SystemTests
+        run: |
+          newman run authentication-tests.json --environment environment.json
