@@ -2,12 +2,12 @@
   "id": "ref-data-env",
   "values": [
     {
-      "key": "baseUrl",
+      "key": "masters-ref-data-api",
       "value": "https://solid-bassoon-4q7vwq56qx792jpwq-5000.app.github.dev",
       "enabled": true
     },
     {
-      "key": "apiKey",
+      "key": "reference-api-admin-key",
       "value": "admin-secret-123",
       "enabled": true
     }
