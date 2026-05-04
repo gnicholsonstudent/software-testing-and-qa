@@ -552,26 +552,7 @@
           "listen": "prerequest",
           "script": {
             "exec": [
-              "pm.sendRequest({\r",
-              "    url: pm.collectionVariables.get(\"masters-ref-data-api\") + \"/location\",\r",
-              "    method: 'POST',\r",
-              "    header: {\r",
-              "        'Content-Type': 'application/json',\r",
-              "        'X-Api-Key': pm.collectionVariables.get(\"reference-api-admin-key\")\r",
-              "    },\r",
-              "    body: {\r",
-              "        mode: 'raw',\r",
-              "        raw: JSON.stringify({\r",
-              "            label: \"Temp Entity\",\r",
-              "            active: true,\r",
-              "            derivesFrom: null\r",
-              "        })\r",
-              "    }\r",
-              "}, function (err, res) {\r",
-              "    console.log(pm.environment.get(\"masters-ref-data-api\") + \"/location\")\r",
-              "    const json = res.json();\r",
-              "    pm.environment.set(\"entityId\", json.id);\r",
-              "});"
+              ""
             ],
             "type": "text/javascript",
             "packages": {},
