@@ -1,0 +1,63 @@
+name: SAST (SonarQube)
+description: Runs Static Analysis for Pull Requests using SonarQube
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+    paths-ignore:
+      - 'terraform/**'
+      - '.github/**'
+
+permissions:
+  contents: read
+  packages: write
+  checks: write
+  actions: write  
+  security-events: write
+
+jobs:
+  sast-sonar:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install SonarScanner for .NET
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Begin Sonar analysis
+        working-directory: src
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner begin \
+            /k:"gnicholsonstudent_software-testing-and-qa" \
+            /o:"gnicholsonstudent" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.token="${SONAR_TOKEN}" \
+            /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" \
+            /d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
+
+      - name: Build
+        working-directory: src
+        run: dotnet build -c Release
+
+      - name: Test (with coverage)
+        working-directory: src
+        run: | 
+          dotnet test tests/ReferenceDataApi.UnitTests -c Release --collect:"XPlat Code Coverage;Format=opencover" --logger "trx"
+          dotnet test tests/ReferenceDataApi.IntegrationTests -c Release --collect:"XPlat Code Coverage;Format=opencover" --logger "trx"
+
+      - name: End Sonar analysis
+        working-directory: src
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
