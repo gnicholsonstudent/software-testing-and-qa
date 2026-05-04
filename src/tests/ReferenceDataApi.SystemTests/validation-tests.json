@@ -1,0 +1,1408 @@
+{
+  "info": {
+    "_postman_id": "6f9773bb-2873-45d5-83ab-b468669b0de4",
+    "name": "ReferenceDataApi.ValidationTests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "35037695"
+  },
+  "item": [
+    {
+      "name": "VT_01 Create endpoint accepts a valid model",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonData = pm.response.json();\r",
+              "\r",
+              "pm.environment.set(\"entityId\", jsonData.id);\r",
+              "\r",
+              "pm.test(\"Status code is 201 Created\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains id\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.id).to.not.be.null;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Label is correct\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.label).to.eql(\"Test label\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_02 Create endpoint rejects an empty body",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_03 Create endpoint rejects an empty string for label",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"\",\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_04 Create endpoint rejects a null string for label",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": null,\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_05 Create endpoint rejects an invalid data type for the active property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": 1,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_06 Create endpoint rejects an invalid data type for the derivesFrom property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": \"1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_07 Create endpoint rejects a negative integer for the derivesFrom property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": -1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_08 Create endpoint rejects a pre-populated createdDate property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": 1,\r\n  \"createdDate\": \"2018-03-22T08:30:58.7\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_09 Create endpoint rejects additional properties",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": 1,\r\n  \"createdDate\": \"2018-03-22T08:30:58.7\",\r\n  \"additionalProperty\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_10 Create endpoint rejects a label that exceeds the maximum length",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label with too many characters lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum\",\r\n  \"active\": true,\r\n  \"derivesFrom\": 1,\r\n  \"createdDate\": \"2018-03-22T08:30:58.7\",\r\n  \"additionalProperty\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_11 Update endpoint accepts valid model",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204 No Content\", function () {\r",
+              "    pm.response.to.have.status(204);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_12 Update endpoint rejects an empty body",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_13 Update endpoint rejects an empty string for label",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"\",\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_14 Update endpoint rejects a null string for label",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": null,\r\n  \"active\": true,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_15 Update endpoint rejects an invalid data type for the active property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": 1,\r\n  \"derivesFrom\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_16 Update endpoint rejects an invalid data type for the derivesFrom property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": \"6\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_17 Update endpoint rejects a negative integer for the derivesFrom property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": -1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_18 Update endpoint rejects attempts to modify read-only createdDate property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": 2,\r\n  \"createdDate\": \"2018-03-22T08:30:58.7\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_19 Update endpoint rejects additional properties",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label\",\r\n  \"active\": true,\r\n  \"derivesFrom\": 2,\r\n  \"additionalProperty\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "VT_20 Update endpoint rejects a label that exceeds the maximum length property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{reference-api-admin-key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "X-Api-Key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"label\": \"Test label with too many characters lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum\",\r\n  \"active\": true,\r\n  \"derivesFrom\": 2,\r\n  \"additionalProperty\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{masters-ref-data-api}}/location/1",
+          "host": [
+            "{{masters-ref-data-api}}"
+          ],
+          "path": [
+            "location",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "masters-ref-data-api",
+      "value": ""
+    },
+    {
+      "key": "reference-api-admin-key",
+      "value": ""
+    }
+  ]
+}
