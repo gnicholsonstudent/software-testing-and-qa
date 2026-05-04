@@ -20,7 +20,7 @@ jobs:
 
       - name: Run Performance Tests
         working-directory: src/tests/ReferenceDataApi.PerformanceTests
-        run: k6 run tests/performance/performance-tests.js
+        run: k6 run performance-tests.js
 
   smoke-tests:
     name: Smoke Tests (ST)
