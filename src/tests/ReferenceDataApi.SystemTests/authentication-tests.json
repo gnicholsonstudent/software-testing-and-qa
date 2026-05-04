@@ -904,7 +904,7 @@
           "apikey": [
             {
               "key": "value",
-              "value": "{{reference-api-admin-key}}",
+              "value": "{{reference-api-reader-key}}",
               "type": "string"
             },
             {
