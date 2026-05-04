@@ -1,79 +1,64 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using ReferenceDataApi.Repositories;
 using ReferenceDataApi.Security;
 using ReferenceDataApi.Services;
+using ReferenceDataApi.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
 builder.Services.AddControllers();
 
-// Options for API key auth
+// Repo + service DI
+builder.Services.AddSingleton<IReferenceDataRepository, InMemoryReferenceDataRepository>();
+builder.Services.AddScoped<IReferenceDataService, ReferenceDataService>();
+
+// ApiKey options from config
 builder.Services.Configure<ApiKeyOptions>(builder.Configuration.GetSection("ApiKeyAuth"));
 
-// AuthN/AuthZ
+// Authentication + authorisation
 builder.Services
     .AddAuthentication("ApiKey")
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>("ApiKey", _ => { });
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    // Optional policies if you prefer using [Authorize(Policy=...)] later
     options.AddPolicy("ReaderOrAdmin", policy => policy.RequireRole("Reader", "Admin"));
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 });
 
-// DI for repository + service
-builder.Services.AddSingleton<IReferenceDataRepository, InMemoryReferenceDataRepository>();
-builder.Services.AddScoped<IReferenceDataService, ReferenceDataService>();
-
-// Swagger + API Key header
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Reference Data API",
-        Version = "v1",
-        Description = "CRUD API for internal reference data (type-based routing) secured with API keys."
-    });
-
-    var headerName = builder.Configuration["ApiKeyAuth:HeaderName"] ?? "X-API-KEY";
-    c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
-    {
-        Description = $"API Key authentication via header `{headerName}`",
-        Name = headerName,
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "ApiKey"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ApiKey" }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
+builder.Services.AddApiKeyAuth();
 
 var app = builder.Build();
 
-// Swagger
+// Swagger UI
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Reference Data API v1");
 });
 
-// Standard pipeline
-app.UseHttpsRedirection();
-
+// Auth middleware
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Health endpoint for post-deploy checks
+app.MapGet("/health", () =>
+{
+    return Results.Ok(new
+    {
+        status = "ok",
+        service = "ReferenceDataApi",
+        utcNow = DateTime.UtcNow
+    });
+})
+.WithName("Health")
+.AllowAnonymous();
 
 app.MapControllers();
 

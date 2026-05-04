@@ -1,5 +1,5 @@
-using ReferenceDataApi.Contracts;
-using ReferenceDataApi.Models;
+using ReferenceDataApi.Domain;
+using ReferenceDataApi.Dtos;
 using ReferenceDataApi.Repositories;
 
 namespace ReferenceDataApi.Services;
@@ -13,58 +13,62 @@ public sealed class ReferenceDataService : IReferenceDataService
         _repo = repo;
     }
 
-    public ReferenceDataDto? Get(string type, int id)
+    public ReferenceDataResponse? Get(string type, int id)
     {
-        var item = _repo.Get(type, id);
-        return item is null ? null : ToDto(item);
+        return _repo.TryGet(type, id, out var item) && item is not null
+            ? ReferenceDataResponse.From(type, item)
+            : null;
     }
 
-    public ReferenceDataDto Create(string type, CreateReferenceDataRequest request)
+    public ReferenceDataResponse Create(string type, CreateReferenceDataRequest request)
     {
         ValidateType(type);
 
         if (request.DerivesFrom is int parentId && !_repo.Exists(type, parentId))
-            throw new InvalidOperationException($"DerivesFrom id {parentId} does not exist in type '{type}'.");
+            throw new InvalidOperationException($"DerivesFrom={parentId} not found for type '{type}'.");
 
-        var newId = _repo.NextId(type);
-
-        var entity = new ReferenceData
+        var created = _repo.Add(type, new ReferenceDataItem
         {
-            Id = newId,
+            Id = 0, // repo assigns
             Label = request.Label.Trim(),
             DerivesFrom = request.DerivesFrom,
             Active = request.Active,
             CreatedDate = DateTime.UtcNow
-        };
-
-        var created = _repo.Create(type, entity);
-        return ToDto(created);
-    }
-
-    public ReferenceDataDto? Update(string type, int id, UpdateReferenceDataRequest request)
-    {
-        ValidateType(type);
-
-        if (request.DerivesFrom == id)
-            throw new InvalidOperationException("DerivesFrom cannot reference the same item (self-reference).");
-
-        if (request.DerivesFrom is int parentId && !_repo.Exists(type, parentId))
-            throw new InvalidOperationException($"DerivesFrom id {parentId} does not exist in type '{type}'.");
-
-        var updated = _repo.Update(type, id, existing =>
-        {
-            // Preserve CreatedDate and Id
-            return new ReferenceData
-            {
-                Id = existing.Id,
-                CreatedDate = existing.CreatedDate,
-                Label = request.Label.Trim(),
-                DerivesFrom = request.DerivesFrom,
-                Active = request.Active
-            };
         });
 
-        return updated is null ? null : ToDto(updated);
+        return ReferenceDataResponse.From(type, created);
+    }
+
+    public bool Update(string type, int id, UpdateReferenceDataRequest request, out string? error)
+    {
+        error = null;
+        ValidateType(type);
+
+        if (!_repo.TryGet(type, id, out var existing) || existing is null)
+            return false;
+
+        if (request.DerivesFrom == id)
+        {
+            error = "DerivesFrom cannot reference the item itself.";
+            return false;
+        }
+
+        if (request.DerivesFrom is int parentId && !_repo.Exists(type, parentId))
+        {
+            error = $"DerivesFrom={parentId} not found for type '{type}'.";
+            return false;
+        }
+
+        var updated = new ReferenceDataItem
+        {
+            Id = id,
+            Label = request.Label.Trim(),
+            DerivesFrom = request.DerivesFrom,
+            Active = request.Active,
+            CreatedDate = existing.CreatedDate // preserve
+        };
+
+        return _repo.Update(type, updated);
     }
 
     public bool Delete(string type, int id)
@@ -78,7 +82,4 @@ public sealed class ReferenceDataService : IReferenceDataService
         if (string.IsNullOrWhiteSpace(type))
             throw new ArgumentException("referenceDataType must be provided.", nameof(type));
     }
-
-    private static ReferenceDataDto ToDto(ReferenceData item)
-        => new(item.Id, item.Label, item.DerivesFrom, item.Active, item.CreatedDate);
 }

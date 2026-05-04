@@ -1,101 +1,111 @@
 using System.Collections.Concurrent;
-using ReferenceDataApi.Models;
+using System.Threading;
+using ReferenceDataApi.Domain;
 
 namespace ReferenceDataApi.Repositories;
 
 public sealed class InMemoryReferenceDataRepository : IReferenceDataRepository
 {
-    // type -> (id -> entity)
-    private readonly ConcurrentDictionary<string, ConcurrentDictionary<int, ReferenceData>> _store
-        = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, ConcurrentDictionary<int, ReferenceDataItem>> _store =
+        new(StringComparer.OrdinalIgnoreCase);
 
-    // type -> id counter
-    private readonly ConcurrentDictionary<string, int> _counters
-        = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, int> _idCounters =
+        new(StringComparer.OrdinalIgnoreCase);
 
     public InMemoryReferenceDataRepository()
     {
         Seed();
     }
 
-    public ReferenceData? Get(string type, int id)
-        => GetBucket(type).TryGetValue(id, out var item) ? item : null;
-
-    public bool Exists(string type, int id)
-        => GetBucket(type).ContainsKey(id);
-
-    public int NextId(string type)
-        => _counters.AddOrUpdate(NormalizeType(type), 1, (_, current) => current + 1);
-
-    public ReferenceData Create(string type, ReferenceData item)
+    public bool TryGet(string type, int id, out ReferenceDataItem? item)
     {
-        var bucket = GetBucket(type);
-        if (!bucket.TryAdd(item.Id, item))
-            throw new InvalidOperationException($"Item with id {item.Id} already exists in type '{type}'.");
+        item = null;
+        if (!_store.TryGetValue(NormaliseType(type), out var bucket))
+            return false;
 
-        return item;
+        return bucket.TryGetValue(id, out item);
     }
 
-    public ReferenceData? Update(string type, int id, Func<ReferenceData, ReferenceData> update)
+    public bool Exists(string type, int id)
+        => _store.TryGetValue(NormaliseType(type), out var bucket) && bucket.ContainsKey(id);
+
+    public ReferenceDataItem Add(string type, ReferenceDataItem item)
     {
-        var bucket = GetBucket(type);
+        var t = NormaliseType(type);
+        var bucket = _store.GetOrAdd(t, _ => new ConcurrentDictionary<int, ReferenceDataItem>());
 
-        while (true)
+        var nextId = NextId(t);
+
+        var created = new ReferenceDataItem
         {
-            if (!bucket.TryGetValue(id, out var existing))
-                return null;
+            Id = nextId,
+            Label = item.Label,
+            DerivesFrom = item.DerivesFrom,
+            Active = item.Active,
+            CreatedDate = item.CreatedDate
+        };
 
-            var updated = update(existing);
+        bucket[nextId] = created;
+        return created;
+    }
 
-            if (bucket.TryUpdate(id, updated, existing))
-                return updated;
-        }
+    public bool Update(string type, ReferenceDataItem item)
+    {
+        var t = NormaliseType(type);
+        if (!_store.TryGetValue(t, out var bucket))
+            return false;
+
+        if (!bucket.TryGetValue(item.Id, out var existing))
+            return false;
+
+        // Preserve CreatedDate (immutable)
+        existing.Label = item.Label;
+        existing.DerivesFrom = item.DerivesFrom;
+        existing.Active = item.Active;
+
+        return true;
     }
 
     public bool Delete(string type, int id)
-        => GetBucket(type).TryRemove(id, out _);
+    {
+        var t = NormaliseType(type);
+        if (!_store.TryGetValue(t, out var bucket))
+            return false;
 
-    private ConcurrentDictionary<int, ReferenceData> GetBucket(string type)
-        => _store.GetOrAdd(NormalizeType(type), _ => new ConcurrentDictionary<int, ReferenceData>());
+        return bucket.TryRemove(id, out _);
+    }
 
-    private static string NormalizeType(string type)
-        => type.Trim();
+    private int NextId(string type)
+    {
+        // Counters start at existing max seeded id.
+        return _idCounters.AddOrUpdate(
+            type,
+            addValueFactory: _ => 1,
+            updateValueFactory: (_, current) => current + 1
+        );
+    }
+
+    private static string NormaliseType(string type) => type.Trim();
 
     private void Seed()
     {
-        // Seed types
-        SeedType("location", new[]
-        {
-            new ReferenceData { Id = 1, Label = "London", DerivesFrom = null, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-30) },
-            new ReferenceData { Id = 2, Label = "Manchester", DerivesFrom = null, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-25) },
-            new ReferenceData { Id = 3, Label = "Canary Wharf", DerivesFrom = 1, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-10) }
-        });
+        // Seed buckets
+        var location = _store.GetOrAdd("location", _ => new ConcurrentDictionary<int, ReferenceDataItem>());
+        var commodity = _store.GetOrAdd("commodity", _ => new ConcurrentDictionary<int, ReferenceDataItem>());
+        var product = _store.GetOrAdd("product", _ => new ConcurrentDictionary<int, ReferenceDataItem>());
 
-        SeedType("commodity", new[]
-        {
-            new ReferenceData { Id = 1, Label = "Metals", DerivesFrom = null, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-60) },
-            new ReferenceData { Id = 2, Label = "Copper", DerivesFrom = 1, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-40) },
-            new ReferenceData { Id = 3, Label = "Aluminium", DerivesFrom = 1, Active = false, CreatedDate = DateTime.UtcNow.AddDays(-20) }
-        });
+        // Seed data
+        location[1] = new ReferenceDataItem { Id = 1, Label = "United Kingdom", DerivesFrom = null, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-30) };
+        location[2] = new ReferenceDataItem { Id = 2, Label = "London", DerivesFrom = 1, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-20) };
 
-        SeedType("product", new[]
-        {
-            new ReferenceData { Id = 1, Label = "Laptop", DerivesFrom = null, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-15) },
-            new ReferenceData { Id = 2, Label = "Docking Station", DerivesFrom = null, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-12) }
-        });
-    }
+        commodity[1] = new ReferenceDataItem { Id = 1, Label = "Aluminium", DerivesFrom = null, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-10) };
+        commodity[2] = new ReferenceDataItem { Id = 2, Label = "Copper", DerivesFrom = null, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-8) };
 
-    private void SeedType(string type, IEnumerable<ReferenceData> items)
-    {
-        var bucket = GetBucket(type);
+        product[1] = new ReferenceDataItem { Id = 1, Label = "HRC Steel", DerivesFrom = null, Active = true, CreatedDate = DateTime.UtcNow.AddDays(-15) };
 
-        var maxId = 0;
-        foreach (var item in items)
-        {
-            bucket[item.Id] = item;
-            if (item.Id > maxId) maxId = item.Id;
-        }
-
-        _counters[NormalizeType(type)] = maxId;
+        // Set counters to max ids (so new inserts continue after seeded ids)
+        _idCounters["location"] = location.Keys.DefaultIfEmpty(0).Max();
+        _idCounters["commodity"] = commodity.Keys.DefaultIfEmpty(0).Max();
+        _idCounters["product"] = product.Keys.DefaultIfEmpty(0).Max();
     }
 }
