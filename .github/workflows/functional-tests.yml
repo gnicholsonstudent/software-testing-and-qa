@@ -1,0 +1,22 @@
+name: Functional Tests (FT)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman collection
+        working-directory: src/tests/postman
+        run: |
+          newman run functional-tests.json --environment environment.json

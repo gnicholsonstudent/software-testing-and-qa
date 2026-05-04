@@ -1,0 +1,15 @@
+{
+  "id": "ref-data-env",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "https://solid-bassoon-4q7vwq56qx792jpwq-5000.app.github.dev",
+      "enabled": true
+    },
+    {
+      "key": "apiKey",
+      "value": "admin-secret-123",
+      "enabled": true
+    }
+  ]
+}
