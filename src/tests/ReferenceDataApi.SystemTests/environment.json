@@ -12,7 +12,7 @@
       "enabled": true
     },
     {
-      "key": "reference-api-admin-key",
+      "key": "reference-api-reader-key",
       "value": "reader-secret-456",
       "enabled": true
     },
