@@ -20,7 +20,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_12_Get_ReturnsReferenceDataResponse_WhenEntityExists()
+        public void UT_13_Get_ReturnsReferenceDataResponse_WhenEntityExists()
         {
             // Arrange
 
@@ -51,7 +51,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_13_Get_ReturnsNull_WhenEntityDoesNotExist()
+        public void UT_14_Get_ReturnsNull_WhenEntityDoesNotExist()
         {
             // Arrange
 
@@ -73,7 +73,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_14_Create_ReturnsReferenceDataResponse_WhenRequestIsValid()
+        public void UT_15_Create_ReturnsReferenceDataResponse_WhenRequestIsValid()
         {
             // Arrange
 
@@ -111,7 +111,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_15_Create_ThrowsArgumentException_WhenTypeIsInvalid()
+        public void UT_16_Create_ThrowsArgumentException_WhenTypeIsInvalid()
         {
             // Arrange
 
@@ -127,7 +127,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_16_Create_ThrowsInvalidOperationException_WhenDerivesFromIsInvalid()
+        public void UT_17_Create_ThrowsInvalidOperationException_WhenDerivesFromIsInvalid()
         {
             // Arrange
 
@@ -150,7 +150,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_17_Update_ReturnsTrueAndNullError_WhenUpdateSucceeds()
+        public void UT_18_Update_ReturnsTrueAndNullError_WhenUpdateSucceeds()
         {
             // Arrange
 
@@ -185,7 +185,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_18_Update_ReturnsFalseAndNullError_WhenEntityDoesNotExist()
+        public void UT_19_Update_ReturnsFalseAndNullError_WhenEntityDoesNotExist()
         {
             // Arrange
 
@@ -212,7 +212,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_19_Update_ReturnsFalseAndError_WhenDerivesFromReferencesItself()
+        public void UT_20_Update_ReturnsFalseAndError_WhenDerivesFromReferencesItself()
         {
             // Arrange
 
@@ -243,7 +243,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_20_Update_ReturnsFalseAndError_WhenParentDoesNotExist()
+        public void UT_21_Update_ReturnsFalseAndError_WhenParentDoesNotExist()
         {
             // Arrange
 
@@ -278,7 +278,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_21_Update_ThrowsArgumentException_WhenTypeIsInvalid()
+        public void UT_22_Update_ThrowsArgumentException_WhenTypeIsInvalid()
         {
             // Arrange
 
@@ -297,7 +297,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_22_Delete_ReturnsTrue_WhenDeleteSucceeds()
+        public void UT_23_Delete_ReturnsTrue_WhenDeleteSucceeds()
         {
             // Arrange
 
@@ -317,7 +317,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_23_Delete_ReturnsFalse_WhenEntityDoesNotExist()
+        public void UT_24_Delete_ReturnsFalse_WhenEntityDoesNotExist()
         {
             // Arrange
 
@@ -337,7 +337,7 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_24_Delete_ThrowsArgumentException_WhenTypeIsInvalid()
+        public void UT_25_Delete_ThrowsArgumentException_WhenTypeIsInvalid()
         {
             // Arrange
 
