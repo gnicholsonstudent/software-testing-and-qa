@@ -19,7 +19,7 @@ namespace ReferenceDataApi.UnitTests
             _fixture = new Fixture();
         }
 
-         [Test]
+        [Test]
         public void UT_01_Get_ReferenceDataById_ReturnsOkObjectResult_WithExpectedResponse_WhenEntityExists()
         {
             // Arrange
@@ -42,7 +42,7 @@ namespace ReferenceDataApi.UnitTests
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
-                Assert.That(okResult, Is.Not.Null);   
+                Assert.That(okResult, Is.Not.Null);
                 Assert.That(okResult!.Value, Is.EqualTo(expectedResponse));
             }
         }
@@ -197,25 +197,35 @@ namespace ReferenceDataApi.UnitTests
         }
 
         [Test]
-        public void UT_08_Update_ReturnsBadRequestResult_WhenInvalidOperationExceptionIsThrown()
+        public void UT_08_Update_ReturnsBadRequestResult_WhenServiceReturnsAnError()
         {
             // Arrange
 
             var request = _fixture.Create<UpdateReferenceDataRequest>();
+            string? error = "DerivesFrom parent not found.";
 
             _referenceDataServiceStub
-                .Setup(s => s.Update(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<UpdateReferenceDataRequest>(), out It.Ref<string?>.IsAny))
-                .Throws<InvalidOperationException>();
+                .Setup(s => s.Update(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<UpdateReferenceDataRequest>(), out error))
+                .Returns(false);
 
             var controller = new ReferenceDataController(_referenceDataServiceStub.Object);
 
             // Act
 
             var result = controller.Update("TestType", 1, request);
+            var badRequestResult = result as BadRequestObjectResult;
 
             // Assert
 
-            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+                Assert.That(badRequestResult, Is.Not.Null);
+                Assert.That(badRequestResult!.Value, Is.Not.Null);
+                var errorProperty = badRequestResult.Value!.GetType().GetProperty("error");
+                Assert.That(errorProperty, Is.Not.Null);
+                Assert.That(errorProperty!.GetValue(badRequestResult.Value), Is.EqualTo(error));
+            }
         }
 
         [Test]
@@ -278,6 +288,26 @@ namespace ReferenceDataApi.UnitTests
             // Assert
 
             Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        }
+
+        [Test]
+        public void UT_12_Delete_ReturnsBadRequestResult_WhenArgumentExceptionIsThrown()
+        {
+            // Arrange
+
+            _referenceDataServiceStub
+                .Setup(s => s.Delete(It.IsAny<string>(), It.IsAny<int>()))
+                .Throws<ArgumentException>();
+
+            var controller = new ReferenceDataController(_referenceDataServiceStub.Object);
+
+            // Act
+
+            var result = controller.Delete("TestType", 1);
+
+            // Assert
+
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
     }
 }
